@@ -1,4 +1,4 @@
-from telegram.ext import Application, CommandHandler, filters
+from telegram.ext import Application, CommandHandler
 import signal
 import sys
 import threading
@@ -129,4 +129,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    main()
+    main(args.ip, args.port)
