@@ -49,7 +49,7 @@ async def ss(update, context):
         return
     image_count += 1
     image = f"img/{image_count}.png"
-    await update.message.reply_text(f"Scrrenshot from {target}")
+    await update.message.reply_text(f"Screenshot from {target}")
     await update.message.reply_photo(open(f"{image}", "rb"))
 
 async def stop(update, context):

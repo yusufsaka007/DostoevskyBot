@@ -64,11 +64,10 @@ def verify_id(__id, __id_target_db):
         return False
     return __id_target_db[__id]
 
-def add_id(__id_target_db, __target):
-    new_id = generate_random_id()
-    __id_target_db[new_id] = __target
+def add_id(__id_target_db, __target, __id):
+    __id_target_db[__id] = __target
     with open(ID_PATH, "a") as f:
-        f.write(f"{new_id}:{__target}\n")
+        f.write(f"{__id}:{__target}\n")
 
 def remove_id(all=False, __id_target_db=None, __target=None):
     if all:

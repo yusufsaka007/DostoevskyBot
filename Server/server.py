@@ -101,7 +101,7 @@ class Server:
                 # Genereate a custom target string that will correspond to the client
                 new_id = generate_random_id()
                 clientSocket.send(new_id.encode())
-                self.id_target_db[new_id] = target
+                add_id(self.id_target_db, target, new_id)
                 self.target_socket_db[target] = clientSocket
                 green(f"New target {target} with the ID {new_id} added to the database")
 
