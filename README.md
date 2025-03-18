@@ -40,17 +40,22 @@ To set up DostoevskyBot, follow these steps:
 4. Build the C++ screenshot tool:
     - Ensure the compiled executable is accessible to the Python server.
 
+5. Add your telegram Id to user_ids.txt. You can find out your Id by using [userinfobot](https://telegram.me/userinfobot)
+
 ## Usage
 1. Start the Python server:
     ```sh
-    python3 trigger.py
+    python3 trigger.py <ip> <port>
     ```
 
 2. Interact with the Telegram bot using the predefined commands to capture screenshots and perform other monitoring tasks.
 
 ## Contributing
-We welcome contributions to enhance the functionality and security of DostoevskyBot. Please fork the repository and create a pull request with your improvements.
+We welcome contributions to enhance the functionality and security of DostoevskyBot. Please fork the repository and create a pull request with your improvements. I would like to add my own user GUI for mobile applications. If you would like to contribute to this project by building a simple user interface you may contact me.
 
+- **@yusufsaka007 on X.com**
+- **yusufsaka5481@gmail.com**
+  
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
