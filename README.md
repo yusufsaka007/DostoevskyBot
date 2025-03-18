@@ -38,7 +38,8 @@ To set up DostoevskyBot, follow these steps:
     - Create a `token.txt` file and add your API token:
 
 4. Build the C++ Spyware:
-    - This Spywware will use an encrypted IP and Port. You can use the encrypt.py to get the encrypted IP and Port. 
+    - This Spyware uses [OpenCV](https://opencv.org/)  which will be changed soon in order to decrease the size of the executable and make it completely static.
+    - This Spyware will use an encrypted IP and Port. You can use the encrypt.py to get the encrypted IP and Port. 
     Change manually:
     ```sh
     python3 encrypt.py <ip> <port>
