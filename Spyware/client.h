@@ -12,8 +12,8 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-const int DEFAULT_PORT = 6081;
-const std::string DEFAULT_IP_ADDRESS = "7O047LN464073";
+const int DEFAULT_PORT = 0;
+const std::string DEFAULT_IP_ADDRESS = "";
 
 class Client {
 public:
