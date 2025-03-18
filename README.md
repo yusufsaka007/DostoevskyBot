@@ -60,7 +60,7 @@ To set up DostoevskyBot, follow these steps:
 2. Interact with the Telegram bot using the predefined commands to capture screenshots and perform other monitoring tasks.
 
 ## Contributing
-We welcome contributions to enhance the functionality and security of DostoevskyBot. Please fork the repository and create a pull request with your improvements. I would like to add my own user GUI for mobile applications. If you would like to contribute to this project by building a simple user interface you may contact me.
+We welcome contributions to enhance the functionality and security of DostoevskyBot. Please fork the repository and create a pull request with your improvements. I would like to add an original user GUI for mobile devices. If you would like to contribute to this project by building a simple user interface you may contact me.
 
 - **@yusufsaka007 on X.com**
 - **yusufsaka5481@gmail.com**
