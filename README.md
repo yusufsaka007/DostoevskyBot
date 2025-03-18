@@ -37,10 +37,19 @@ To set up DostoevskyBot, follow these steps:
     - Create a new Telegram bot and obtain the API token from [BotFather](https://core.telegram.org/bots#botfather).
     - Create a `token.txt` file and add your API token:
 
-4. Build the C++ screenshot tool:
+4. Build the C++ Spyware:
+    - This Spywware will use an encrypted IP and Port. You can use the encrypt.py to get the encrypted IP and Port. 
+    Change manually:
+    ```sh
+    python3 encrypt.py <ip> <port>
+    ```
+    - Change automatically (Searches for client.h and write the file with the appropriate values):
+    ```sh
+    python3 encrypt.py <ip> <port> -c
+    ```
     - Ensure the compiled executable is accessible to the Python server.
 
-5. Add your telegram Id to user_ids.txt. You can find out your Id by using [userinfobot](https://telegram.me/userinfobot)
+6. Add your telegram Id to user_ids.txt. You can find out your Id by using [userinfobot](https://telegram.me/userinfobot)
 
 ## Usage
 1. Start the Python server:
