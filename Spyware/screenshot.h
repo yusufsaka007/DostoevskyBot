@@ -1,0 +1,53 @@
+#ifndef SCREENSHOT_S
+#define SCREENSHOT_S
+
+#include <Windows.h>
+#include <opencv2/opencv.hpp>
+
+// Main capture function, which will take a window handle 
+// to get its associated context device and return a cv::Mat object
+// with the appropriate information
+
+BITMAPINFOHEADER createBitmapHeader(int width, int height) {
+	BITMAPINFOHEADER bi;
+	bi.biSize = sizeof(BITMAPINFOHEADER);
+	bi.biWidth = width;
+	bi.biHeight = -height;
+	bi.biPlanes = 1;
+	bi.biBitCount = 24;
+	bi.biCompression = BI_RGB;
+	bi.biSizeImage = 0;
+	bi.biXPelsPerMeter = 0;
+	bi.biYPelsPerMeter = 0;
+	bi.biClrUsed = 0;
+	bi.biClrImportant = 0;
+	
+	return bi;
+}
+
+cv::Mat capture_screen_mat(HWND& __hwnd, 
+	HDC& __hwindowDC, 
+	HDC& __hwindowCompatibleDC,
+	int __screenx,
+	int __screeny,
+	int __width,
+	int __height) {
+
+	cv::Mat src;
+
+	src.create(__height, __width, CV_8UC3);
+
+	HBITMAP hbwindow = CreateCompatibleBitmap(__hwindowDC, __width, __height);
+	BITMAPINFOHEADER bi = createBitmapHeader(__width, __height);
+
+	SelectObject(__hwindowCompatibleDC, hbwindow);
+
+	StretchBlt(__hwindowCompatibleDC, 0, 0, __width, __height, __hwindowDC, __screenx, __screeny, __width, __height, SRCCOPY);
+	GetDIBits(__hwindowCompatibleDC, hbwindow, 0, __height, src.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+	DeleteObject(hbwindow);
+
+	return src;
+}
+
+#endif // !SCREENSHOT_S
