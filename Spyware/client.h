@@ -7,12 +7,13 @@
 #include <WS2tcpip.h>
 #include "screenshot.h"
 #include "id_handler.h"
+#include "decrypt.h"
 #include <vector>
 
 #pragma comment(lib, "Ws2_32.lib")
 
 const int DEFAULT_PORT = 6081;
-const std::string DEFAULT_IP_ADDRESS = "70M464647";
+const std::string DEFAULT_IP_ADDRESS = "7O047LN464073";
 
 class Client {
 public:
@@ -31,6 +32,32 @@ public:
 		}
 		if (hwindowDC_ != nullptr) {
 			DeleteDC(hwindowDC_);
+		}
+	}
+private: // Private Functions
+	bool ack() {
+		// Receive ack from server
+		int ackBytes = recv(clientSocket_, receivedCommand_, 16, 0);
+
+		if (ackBytes < 0) {
+			std::cout << "Error receiving ack: " << WSAGetLastError() << std::endl;
+			return false;
+		}
+		else if (ackBytes == 0) {
+			std::cout << "Server disconnected" << std::endl;
+			return false;
+		}
+		receivedCommand_[ackBytes] = '\0';
+
+		std::cout << "Received ack: " << receivedCommand_ << std::endl;
+		if (strcmp(receivedCommand_, "0") == 0) {
+			std::cout << "Server rejected connection" << std::endl;
+			runProgram_ = false;
+			return false;
+		}
+		else if (strcmp(receivedCommand_, "1") == 0) {
+			std::cout << "Server accepted connection" << std::endl;
+			return true;
 		}
 	}
 	void init_server() {
@@ -92,6 +119,10 @@ public:
 				IdHandler::create_file();
 				// Doesn't have id, send server '0' to get one. Id is a 15 random char ending with '\0'
 				send(clientSocket_, "0", 1, 0);
+				if (!ack()) {
+					if (runProgram_) continue;
+					else break;
+				}
 				int idBytes = recv(clientSocket_, receivedCommand_, 16, 0); receivedCommand_[15] = '\0';
 				if (idBytes < 0) {
 					std::cout << "Error receiving id: " << WSAGetLastError() << std::endl;
@@ -101,8 +132,9 @@ public:
 					std::cout << "Server disconnected" << std::endl;
 					continue;
 				}
+
 				std::cout << "Received id: " << receivedCommand_ << std::endl;
-				id = receivedCommand_;
+				id = (std::string) receivedCommand_;
 				IdHandler::write_id(id);
 			}
 			else {
@@ -111,28 +143,10 @@ public:
 				// Send the id to get verified
 				IdHandler::read_id(id);
 				send(clientSocket_, id.c_str(), 16, 0);
-			}
-
-			// Receive ack from server
-			int ackBytes = recv(clientSocket_, receivedCommand_, 16, 0);
-			
-			if (ackBytes < 0) {
-				std::cout << "Error receiving ack: " << WSAGetLastError() << std::endl;
-				continue;
-			}
-			else if (ackBytes == 0) {
-				std::cout << "Server disconnected" << std::endl;
-				continue;
-			}
-			receivedCommand_[ackBytes] = '\0';
-
-			std::cout << "Received ack: " << receivedCommand_ << std::endl;
-			if (strcmp(receivedCommand_, "0") == 0) {
-				std::cout << "Server rejected connection" << std::endl;
-				runProgram_ = false;
-			}
-			else if (strcmp(receivedCommand_, "1") == 0) {
-				std::cout << "Server accepted connection" << std::endl;
+				if (!ack()) {
+					if (runProgram_) continue;
+					else break;
+				}
 			}
 
 			while (runProgram_) {
@@ -145,7 +159,7 @@ public:
 			}
 		}
 	}
-private: // Private Functions
+
 	bool recv_command() {
 		if (clientSocket_ == INVALID_SOCKET) {
 			std::cout << "Invalid socket" << std::endl;
@@ -168,6 +182,7 @@ private: // Private Functions
 
 		if (strcmp(receivedCommand_, "0") == 0) { // Will stop the server
 			runProgram_ = false;
+			return false;
 		}
 		else if (strcmp(receivedCommand_, "1") == 0) { // Will take a screenshot
 			src_ = capture_screen_mat(hwnd_, hwindowDC_, hwindowCompatibleDC_, screenx_, screeny_, width_, height_);
