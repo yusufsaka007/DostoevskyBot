@@ -5,6 +5,7 @@
     <ClInclude Include="decrypt.h" />
     <ClInclude Include="id_handler.h" />
     <ClInclude Include="screenshot.h" />
+    <ClInclude Include="startup.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

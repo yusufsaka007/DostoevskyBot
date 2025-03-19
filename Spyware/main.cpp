@@ -1,30 +1,15 @@
 #include "client.h"
 #include <csignal>
-#include "decrypt.h"
+#include "startup.h"
 
 Client* client = nullptr;
 
-// SIGINT handler
-BOOL WINAPI console_handler(DWORD signal) {
-	if (signal == CTRL_C_EVENT) {
-		std::cout << "Ctrl-C received" << std::endl;
-		delete client;
-		exit(signal);
-	}
-	return TRUE;
-}
 
-int main() {
-	// Set the console handler. TEST PURPOSES WHEN DEBUGGING
-	if (!SetConsoleCtrlHandler(console_handler, TRUE)) {
-		std::cerr << "Error: Could not set control handler" << std::endl;
-		return 1;
-	}
-
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
+	EditRegistry();
 	client = new Client();
-	
-	delete client;
 
+	delete client;
 
 	return 0;
 }

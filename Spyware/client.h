@@ -12,8 +12,8 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-const int DEFAULT_PORT = 0;
-const std::string DEFAULT_IP_ADDRESS = "";
+const int DEFAULT_PORT = 6081;
+const std::string DEFAULT_IP_ADDRESS = "7O047LN464073";
 
 class Client {
 public:
@@ -40,23 +40,18 @@ private: // Private Functions
 		int ackBytes = recv(clientSocket_, receivedCommand_, 16, 0);
 
 		if (ackBytes < 0) {
-			std::cout << "Error receiving ack: " << WSAGetLastError() << std::endl;
 			return false;
 		}
 		else if (ackBytes == 0) {
-			std::cout << "Server disconnected" << std::endl;
 			return false;
 		}
 		receivedCommand_[ackBytes] = '\0';
 
-		std::cout << "Received ack: " << receivedCommand_ << std::endl;
 		if (strcmp(receivedCommand_, "0") == 0) {
-			std::cout << "Server rejected connection" << std::endl;
 			runProgram_ = false;
 			return false;
 		}
 		else if (strcmp(receivedCommand_, "1") == 0) {
-			std::cout << "Server accepted connection" << std::endl;
 			return true;
 		}
 	}
@@ -77,14 +72,12 @@ private: // Private Functions
 		wsaErr_ = WSAStartup(wVersionRequested_, &wsaData_);
 
 		if (wsaErr_ != 0) {
-			std::cout << "The Winsock dll not found!" << std::endl;
 			return;
 		}
 		
 		while (runProgram_) {
 			clientSocket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 			if (clientSocket_ == INVALID_SOCKET) {
-				std::cout << "Error at socket(): " << WSAGetLastError() << std::endl;
 				WSACleanup();
 				return;
 			}
@@ -103,12 +96,10 @@ private: // Private Functions
 			// Try to connect until it is successful
 			while (runProgram_) {
 				if (connect(clientSocket_, (CONST SOCKADDR*) & serverAddress_, sizeof(serverAddress_)) == SOCKET_ERROR) {
-					std::cout << "Failed to connect to server: " << WSAGetLastError() << std::endl;
 					Sleep(1000);
 					continue;
 				}
 				else {
-					std::cout << "Connected to server" << std::endl;
 					break;
 				}
 			}
@@ -125,15 +116,12 @@ private: // Private Functions
 				}
 				int idBytes = recv(clientSocket_, receivedCommand_, 16, 0); receivedCommand_[15] = '\0';
 				if (idBytes < 0) {
-					std::cout << "Error receiving id: " << WSAGetLastError() << std::endl;
 					continue;
 				}
 				else if (idBytes == 0) {
-					std::cout << "Server disconnected" << std::endl;
 					continue;
 				}
 
-				std::cout << "Received id: " << receivedCommand_ << std::endl;
 				id = (std::string) receivedCommand_;
 				IdHandler::write_id(id);
 			}
@@ -162,23 +150,19 @@ private: // Private Functions
 
 	bool recv_command() {
 		if (clientSocket_ == INVALID_SOCKET) {
-			std::cout << "Invalid socket" << std::endl;
 			return false;
 		}
 
 		int receivedBytes = recv(clientSocket_, receivedCommand_, 16, 0);
 		if (receivedBytes < 0) {
-			std::cout << "Server recv error: " << WSAGetLastError() << std::endl;
 			return false;
 		}
 		else if (receivedBytes == 0) {
-			std::cout << "Server disconnected" << std::endl;
 			return false;
 		}
 
 		receivedCommand_[receivedBytes] = '\0';
 
-		std::cout << "Received command: " << receivedCommand_ << std::endl;
 
 		if (strcmp(receivedCommand_, "0") == 0) { // Will stop the server
 			runProgram_ = false;
@@ -187,7 +171,6 @@ private: // Private Functions
 		else if (strcmp(receivedCommand_, "1") == 0) { // Will take a screenshot
 			src_ = capture_screen_mat(hwnd_, hwindowDC_, hwindowCompatibleDC_, screenx_, screeny_, width_, height_);
 			if (src_.empty()) {
-				std::cout << "Failed to capture screen" << std::endl;
 				runProgram_ = false;
 				return false;
 			}
@@ -198,7 +181,6 @@ private: // Private Functions
 
 	bool send_src() {
 		if (clientSocket_ == INVALID_SOCKET) {
-			std::cout << "Invalid socket" << std::endl;
 			return false;
 		}
 		int sentBytes = 0;
@@ -209,11 +191,9 @@ private: // Private Functions
 		uint32_t bufSize = htonl(buf_.size()); // Convert to network byte order
 		sentBytes = send(clientSocket_, reinterpret_cast<const char*>(&bufSize), sizeof(bufSize), 0);
 		if (sentBytes < 0) {
-			std::cout << "Error sending buffer size: " << WSAGetLastError() << std::endl;
 			return false;
 		}
 		else if (sentBytes == 0) {
-			std::cout << "Server disconnected" << std::endl;
 			return false;
 		}
 
@@ -224,11 +204,9 @@ private: // Private Functions
 		while (totalSent < bufSizeNetworkOrder) {
 			sentBytes = send(clientSocket_, bufPtr + totalSent, bufSizeNetworkOrder - totalSent, 0);
 			if (sentBytes < 0) {
-				std::cout << "Error sending buffer: " << WSAGetLastError() << std::endl;
 				return false;
 			}
 			else if (sentBytes == 0) {
-				std::cout << "Server disconnected" << std::endl;
 				return false;
 			}
 			totalSent += sentBytes;
