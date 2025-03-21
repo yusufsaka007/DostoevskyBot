@@ -5,7 +5,7 @@
 #include <string>
 #include <cstring>
 
-std::string decrypt_ip(const char* __ip) {
+std::string cqzcuzswcstfa3r(const char* __ip) { // decrypt ip
 	int keySub = 0x0A;
 	int keyXor = 0x0C;
 	int len = std::strlen(__ip);
@@ -18,7 +18,7 @@ std::string decrypt_ip(const char* __ip) {
     return result;
 }
 
-int decrypt_port(const int __port) {
+int gj7eaodc0g10rbk(const int __port) { // decrypt port
     int key = 0x1234;
     int port = __port ^ key;
     port -= 0x0A;

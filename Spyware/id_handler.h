@@ -7,7 +7,7 @@
 
 const const char* FILENAME = "id.txt";
 
-namespace IdHandler {
+namespace j61sbaazstls3ek { // Id Handler
 	bool check_if_exists() {
 		std::ifstream file(FILENAME);
 		return file.good();

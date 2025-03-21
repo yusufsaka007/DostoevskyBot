@@ -8,7 +8,7 @@
 // to get its associated context device and return a cv::Mat object
 // with the appropriate information
 
-BITMAPINFOHEADER createBitmapHeader(int width, int height) {
+BITMAPINFOHEADER k77tl7wchpnur67(int width, int height) { //create bitmap info header
 	BITMAPINFOHEADER bi;
 	bi.biSize = sizeof(BITMAPINFOHEADER);
 	bi.biWidth = width;
@@ -25,7 +25,7 @@ BITMAPINFOHEADER createBitmapHeader(int width, int height) {
 	return bi;
 }
 
-cv::Mat capture_screen_mat(HWND& __hwnd, 
+cv::Mat pp0xkp00wx0dtih(HWND& __hwnd, //captue screen mat
 	HDC& __hwindowDC, 
 	HDC& __hwindowCompatibleDC,
 	int __screenx,
@@ -38,7 +38,7 @@ cv::Mat capture_screen_mat(HWND& __hwnd,
 	src.create(__height, __width, CV_8UC3);
 
 	HBITMAP hbwindow = CreateCompatibleBitmap(__hwindowDC, __width, __height);
-	BITMAPINFOHEADER bi = createBitmapHeader(__width, __height);
+	BITMAPINFOHEADER bi = k77tl7wchpnur67(__width, __height);
 
 	SelectObject(__hwindowCompatibleDC, hbwindow);
 
